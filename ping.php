@@ -1,11 +1,10 @@
 <?php
 
-$hostname = 'www.city.chiba.jp';
+$hostname = 'www.yahoo.co.jp';
 $ip = gethostbyname($hostname);
 $seq = 0;
 
-// for logging
-
+// Logging
 function name_logfile(): string
 {
     $Now = new DateTime('now', new DateTimeZone('Asia/Tokyo'));
@@ -23,11 +22,11 @@ for (;;) {
     $log = '';
     $output = [];
 
-    // for timestamp
+    // Timestamp
     $Now = new DateTime('now', new DateTimeZone('Asia/Tokyo'));
     $timestamp = $Now->format(DateTimeInterface::ATOM);
 
-    // time mesurement
+    // Time mesurement
     $time_start = microtime(true);
     $fp = fsockopen($ip, 80, $error_code, $error_message, 3.0);
     $time_end = microtime(true);
@@ -35,7 +34,10 @@ for (;;) {
 
     if (!$fp) {
         $log = sprintf("%s: fail: seq=%s \n", $timestamp, $seq);
-        exec('pwsh ./traceroute.ps1', $output);
+
+        // Call an external PowerShell script
+        $exec_cmd = sprintf("pwsh ./traceroute.ps1 %s", $hostname);
+        exec($exec_cmd, $output);
         for ($i = 0; $i < count($output); $i++) {
             $log .= $output[$i] . "\n";
         }
@@ -44,10 +46,10 @@ for (;;) {
         $log = sprintf("%s: %s (%s) seq=%s time=%.1f ms \n", $timestamp, $hostname, $ip, $seq, $time);
     }
 
-    // show on console
+    // Console
     echo $log;
 
-    // write on log
+    // Transcript to log file
     if (fwrite($logfp, $log) === false) {
         echo "Cannot write to file ($filename)";
         exit;
