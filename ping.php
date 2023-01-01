@@ -1,6 +1,6 @@
 <?php
 
-$hostname = 'www.yahoo.co.jp';
+$hostname = 'www.city.chiba.jp';
 $ip = gethostbyname($hostname);
 $seq = 0;
 
@@ -18,7 +18,6 @@ function name_logfile(): string
 $logfp = fopen(name_logfile(), 'a+');
 
 for (;;) {
-
     $log = '';
     $output = [];
 
@@ -26,7 +25,7 @@ for (;;) {
     $Now = new DateTime('now', new DateTimeZone('Asia/Tokyo'));
     $timestamp = $Now->format(DateTimeInterface::ATOM);
 
-    // Time mesurement
+    // Time measurement
     $time_start = microtime(true);
     $fp = fsockopen($ip, 80, $error_code, $error_message, 3.0);
     $time_end = microtime(true);
